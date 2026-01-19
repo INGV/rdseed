@@ -51,12 +51,20 @@ All binaries are placed in the `output/` directory (or custom directory specifie
 ```
 output/
 ├── linux-aarch64/
-│   └── rdseed          # Linux ARM64 binary
+│   └── rdseed          # Linux ARM64 binary (Docker)
 ├── linux-amd64/
-│   └── rdseed          # Linux x86_64 binary
-└── native/
-    └── rdseed          # Native binary (macOS or Linux host)
+│   └── rdseed          # Linux x86_64 binary (Docker)
+├── macos-arm64/
+│   └── rdseed          # macOS ARM64 binary (native)
+├── macos-amd64/
+│   └── rdseed          # macOS x86_64 binary (native)
+├── linux-arm64/
+│   └── rdseed          # Linux ARM64 binary (native)
+└── linux-amd64/
+    └── rdseed          # Linux x86_64 binary (native)
 ```
+
+Native builds use the `<os>-<arch>` naming convention based on the host system.
 
 ## Platform Support
 
@@ -85,10 +93,10 @@ file output/linux-amd64/rdseed
 ### Build native macOS binary
 
 ```bash
-./build.sh -t native
+./build.sh -i soft/rdseedv5.3.1.tar.gz -t native
 
-# Verify the binary
-file output/native/rdseed
+# Verify the binary (on Apple Silicon Mac)
+file output/macos-arm64/rdseed
 # Mach-O 64-bit executable arm64
 ```
 

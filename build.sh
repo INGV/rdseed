@@ -18,9 +18,12 @@
 #   all       Build both Docker and native
 #
 # Output:
-#   output/linux-aarch64/rdseed  - Linux ARM64 binary
-#   output/linux-amd64/rdseed    - Linux x86_64 binary
-#   output/native/rdseed         - Native binary for host system
+#   output/linux-aarch64/rdseed  - Linux ARM64 binary (Docker)
+#   output/linux-amd64/rdseed    - Linux x86_64 binary (Docker)
+#   output/macos-arm64/rdseed    - macOS ARM64 binary (native)
+#   output/macos-amd64/rdseed    - macOS x86_64 binary (native)
+#   output/linux-arm64/rdseed    - Linux ARM64 binary (native)
+#   output/linux-amd64/rdseed    - Linux x86_64 binary (native)
 
 set -e
 
@@ -223,12 +226,30 @@ build_native() {
     print_msg "$GREEN" "Building rdseed natively for host system"
     print_msg "$GREEN" "========================================="
 
-    local output_path="$OUTPUT_DIR/native"
-    mkdir -p "$output_path"
-
-    # Detect OS and set appropriate flags
+    # Detect OS and architecture
     local os_type=$(uname -s)
     local arch_type=$(uname -m)
+
+    # Normalize OS name
+    local os_name
+    case "$os_type" in
+        Darwin) os_name="macos" ;;
+        Linux)  os_name="linux" ;;
+        *)      os_name=$(echo "$os_type" | tr '[:upper:]' '[:lower:]') ;;
+    esac
+
+    # Normalize architecture name
+    local arch_name
+    case "$arch_type" in
+        x86_64)         arch_name="amd64" ;;
+        aarch64|arm64)  arch_name="arm64" ;;
+        *)              arch_name="$arch_type" ;;
+    esac
+
+    local output_subdir="${os_name}-${arch_name}"
+    local output_path="$OUTPUT_DIR/$output_subdir"
+    mkdir -p "$output_path"
+
     local cc="cc"
     # Use gnu89 standard to allow legacy C code with implicit function declarations
     local cflags="-O2 -g -std=gnu89 -Wno-return-type -Wno-implicit-function-declaration"
@@ -236,18 +257,18 @@ build_native() {
 
     case "$os_type" in
         Darwin)
-            print_msg "$YELLOW" "Detected macOS ($arch_type)"
+            print_msg "$YELLOW" "Detected macOS ($arch_type) -> $output_subdir"
             # On macOS, use clang (default cc)
             cc="clang"
             ldflags="-lm -lc"
             ;;
         Linux)
-            print_msg "$YELLOW" "Detected Linux ($arch_type)"
+            print_msg "$YELLOW" "Detected Linux ($arch_type) -> $output_subdir"
             cc="gcc"
             ldflags="-lm"
             ;;
         *)
-            print_msg "$YELLOW" "Detected $os_type ($arch_type)"
+            print_msg "$YELLOW" "Detected $os_type ($arch_type) -> $output_subdir"
             ;;
     esac
 
@@ -323,9 +344,9 @@ usage() {
     echo "  all       Build both Docker and native"
     echo ""
     echo "Output:"
-    echo "  <output>/linux-aarch64/rdseed  - Linux ARM64 binary"
-    echo "  <output>/linux-amd64/rdseed    - Linux x86_64 binary"
-    echo "  <output>/native/rdseed         - Native binary for host system"
+    echo "  <output>/linux-aarch64/rdseed  - Linux ARM64 binary (Docker)"
+    echo "  <output>/linux-amd64/rdseed    - Linux x86_64 binary (Docker)"
+    echo "  <output>/<os>-<arch>/rdseed    - Native binary (e.g., macos-arm64, linux-amd64)"
     echo ""
     echo "Examples:"
     echo "  $0 -i soft/rdseedv5.3.1.tar.gz                    # Build Linux binaries (Docker)"
