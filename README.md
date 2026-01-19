@@ -10,6 +10,9 @@ This document explains how to build rdseed using the `build.sh` script.
 ## Quick Start
 
 ```bash
+# Build Linux binaries (aarch64 + x86_64) via Docker
+./build.sh -i soft/rdseedv5.3.1.tar.gz -t docker -o output-bin
+
 # Build Linux binaries (aarch64 + x86_64) via Docker (default)
 ./build.sh -i soft/rdseedv5.3.1.tar.gz
 
