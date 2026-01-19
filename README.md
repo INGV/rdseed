@@ -114,3 +114,16 @@ file output/native/rdseed
 - The Docker build creates a persistent buildx builder named `rdseed-multiarch` for faster subsequent builds
 - Linux binaries are dynamically linked and require `libtirpc` at runtime for AH format support
 - The native macOS build uses system libraries only
+
+## Contribute
+Thanks to your contributions!
+
+Here is a list of users who already contributed to this repository: \
+<a href="https://github.com/ingv/rdseed/graphs/contributors">
+  <img src="https://contrib.rocks/image?repo=ingv/rdseed" />
+</a>
+
+## Author
+(c) 2026 Valentino Lauciani valentino.lauciani[at]ingv.it
+
+Istituto Nazionale di Geofisica e Vulcanologia, Italia
