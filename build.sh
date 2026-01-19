@@ -3,10 +3,10 @@
 # build.sh - Build script for rdseed v5.3.1
 #
 # Usage:
-#   ./build.sh [options]
+#   ./build.sh -i <file> [options]
 #
 # Options:
-#   -i, --input-file <file>  Input tar.gz file containing rdseed source
+#   -i, --input-file <file>  Input tar.gz file containing rdseed source (REQUIRED)
 #   -o, --output <dir>       Output directory for built binaries (default: ./output)
 #   -t, --type <type>        Build type: native, docker, clean, all (default: docker)
 #   -h, --help               Show this help message
@@ -172,7 +172,7 @@ build_docker_platform() {
         --platform "$platform" \
         --target builder \
         --output "type=local,dest=$output_path" \
-        --file "$SRC_DIR/Dockerfile" \
+        --file "$SCRIPT_DIR/Dockerfile" \
         "$SRC_DIR"
 
     # The binary is in the /src directory of the builder stage
@@ -308,10 +308,10 @@ clean() {
 
 # Show usage
 usage() {
-    echo "Usage: $0 [options]"
+    echo "Usage: $0 -i <file> [options]"
     echo ""
     echo "Options:"
-    echo "  -i, --input-file <file>  Input tar.gz file containing rdseed source"
+    echo "  -i, --input-file <file>  Input tar.gz file containing rdseed source (REQUIRED)"
     echo "  -o, --output <dir>       Output directory for built binaries (default: ./output)"
     echo "  -t, --type <type>        Build type: native, docker, clean, all (default: docker)"
     echo "  -h, --help               Show this help message"
@@ -328,8 +328,9 @@ usage() {
     echo "  <output>/native/rdseed         - Native binary for host system"
     echo ""
     echo "Examples:"
-    echo "  $0 -t native                                      # Build native from current directory"
-    echo "  $0 -i soft/rdseedv5.3.1.tar.gz -t native          # Build native from tar.gz"
+    echo "  $0 -i soft/rdseedv5.3.1.tar.gz                    # Build Linux binaries (Docker)"
+    echo "  $0 -i soft/rdseedv5.3.1.tar.gz -t native          # Build native binary"
+    echo "  $0 -i soft/rdseedv5.3.1.tar.gz -t all             # Build all targets"
     echo "  $0 -i soft/rdseedv5.3.1.tar.gz -o ./dist -t all   # Custom output directory"
 }
 
@@ -338,19 +339,27 @@ usage() {
 # Parse command-line arguments
 parse_args "$@"
 
+# Validate required parameters
+if [ -z "$INPUT_FILE" ]; then
+    print_msg "$RED" "Error: Input file is required"
+    print_msg "$RED" "Use -i or --input-file to specify the tar.gz source archive"
+    echo ""
+    usage
+    exit 1
+fi
+
 # Convert OUTPUT_DIR to absolute path if relative
 if [[ "$OUTPUT_DIR" != /* ]]; then
     OUTPUT_DIR="$SCRIPT_DIR/$OUTPUT_DIR"
 fi
 
-# Extract source if input file is provided
-if [ -n "$INPUT_FILE" ]; then
-    # Convert to absolute path if relative
-    if [[ "$INPUT_FILE" != /* ]]; then
-        INPUT_FILE="$SCRIPT_DIR/$INPUT_FILE"
-    fi
-    extract_source "$INPUT_FILE"
+# Convert INPUT_FILE to absolute path if relative
+if [[ "$INPUT_FILE" != /* ]]; then
+    INPUT_FILE="$SCRIPT_DIR/$INPUT_FILE"
 fi
+
+# Extract source from input file
+extract_source "$INPUT_FILE"
 
 # Execute build based on BUILD_TYPE
 case "$BUILD_TYPE" in
