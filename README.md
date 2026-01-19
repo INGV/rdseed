@@ -1,4 +1,4 @@
-# Building rdseed v5.3.1
+# Building rdseed 
 
 This document explains how to build rdseed using the `build.sh` script.
 
