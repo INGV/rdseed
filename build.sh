@@ -12,13 +12,13 @@
 #   -h, --help               Show this help message
 #
 # Build types:
-#   docker    Build for Linux (aarch64 + x86_64) via Docker (default)
+#   docker    Build for Linux (arm64 + x86_64) via Docker (default)
 #   native    Build natively for the host system (macOS or Linux)
 #   clean     Clean all build artifacts
 #   all       Build both Docker and native
 #
 # Output:
-#   output/linux-aarch64/rdseed  - Linux ARM64 binary (Docker)
+#   output/linux-arm64/rdseed    - Linux ARM64 binary (Docker)
 #   output/linux-amd64/rdseed    - Linux x86_64 binary (Docker)
 #   output/macos-arm64/rdseed    - macOS ARM64 binary (native)
 #   output/macos-amd64/rdseed    - macOS x86_64 binary (native)
@@ -208,7 +208,7 @@ build_docker() {
     print_msg "$GREEN" "========================================="
 
     # Build for ARM64
-    build_docker_platform "linux/arm64" "linux-aarch64"
+    build_docker_platform "linux/arm64" "linux-arm64"
 
     # Build for AMD64
     build_docker_platform "linux/amd64" "linux-amd64"
@@ -216,7 +216,7 @@ build_docker() {
     print_msg "$GREEN" ""
     print_msg "$GREEN" "Docker build complete!"
     print_msg "$GREEN" "Binaries available in:"
-    print_msg "$GREEN" "  - $OUTPUT_DIR/linux-aarch64/rdseed"
+    print_msg "$GREEN" "  - $OUTPUT_DIR/linux-arm64/rdseed"
     print_msg "$GREEN" "  - $OUTPUT_DIR/linux-amd64/rdseed"
 }
 
@@ -338,13 +338,13 @@ usage() {
     echo "  -h, --help               Show this help message"
     echo ""
     echo "Build types:"
-    echo "  docker    Build for Linux (aarch64 + x86_64) via Docker (default)"
+    echo "  docker    Build for Linux (arm64 + x86_64) via Docker (default)"
     echo "  native    Build natively for the host system (macOS or Linux)"
     echo "  clean     Clean all build artifacts"
     echo "  all       Build both Docker and native"
     echo ""
     echo "Output:"
-    echo "  <output>/linux-aarch64/rdseed  - Linux ARM64 binary (Docker)"
+    echo "  <output>/linux-arm64/rdseed    - Linux ARM64 binary (Docker)"
     echo "  <output>/linux-amd64/rdseed    - Linux x86_64 binary (Docker)"
     echo "  <output>/<os>-<arch>/rdseed    - Native binary (e.g., macos-arm64, linux-amd64)"
     echo ""
