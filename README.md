@@ -11,23 +11,23 @@ This document explains how to build rdseed using the `build.sh` script.
 
 ```bash
 # Build Linux binaries (aarch64 + x86_64) via Docker (default)
-./build.sh
+./build.sh -i soft/rdseedv5.3.1.tar.gz
 
 # Build for your current system (macOS or Linux)
-./build.sh -t native
+./build.sh -i soft/rdseedv5.3.1.tar.gz -t native
 
 # Build everything
-./build.sh -t all
+./build.sh -i soft/rdseedv5.3.1.tar.gz -t all
 
-# Build from a tar.gz source archive
-./build.sh -i soft/rdseedv5.3.1.tar.gz -t native
+# Clean build artifacts
+./build.sh -i soft/rdseedv5.3.1.tar.gz -t clean
 ```
 
 ## Options
 
 | Option | Description |
 |--------|-------------|
-| `-i, --input-file <file>` | Input tar.gz file containing rdseed source |
+| `-i, --input-file <file>` | Input tar.gz file containing rdseed source **(REQUIRED)** |
 | `-o, --output <dir>` | Output directory for built binaries (default: `./output`) |
 | `-t, --type <type>` | Build type: `native`, `docker`, `clean`, `all` (default: `docker`) |
 | `-h, --help` | Show help message |
